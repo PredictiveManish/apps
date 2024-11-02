@@ -34,6 +34,12 @@ export function ReportModal({
     onClick: (e) => onReport(e, reason, note),
   };
 
+  const onFocus = () => {
+    if (!reason) {
+      setReason(ReportReason.Other);
+    }
+  };
+
   return (
     <Modal
       isOpen
@@ -43,7 +49,6 @@ export function ReportModal({
         form: null,
         title: heading,
         rightButtonProps: submitButtonProps,
-        className: { container: 'w-full' },
         copy: { right: 'Submit report' },
       }}
     >
@@ -64,6 +69,7 @@ export function ReportModal({
         </p>
         <textarea
           onInput={(event) => setNote(event.currentTarget.value)}
+          onFocus={onFocus}
           className="mb-1 h-20 w-full resize-none self-stretch rounded-10 bg-surface-float p-2 typo-body"
           data-testid="report_comment"
         />

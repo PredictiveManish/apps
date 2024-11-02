@@ -10,7 +10,6 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PromotionalBanner from './PromotionalBanner';
-import Sidebar from './sidebar/Sidebar';
 import useSidebarRendered from '../hooks/useSidebarRendered';
 import LogContext from '../contexts/LogContext';
 import SettingsContext from '../contexts/SettingsContext';
@@ -44,6 +43,11 @@ const GoBackHeaderMobile = dynamic(
     import(
       /* webpackChunkName: "goBackHeaderMobile" */ './post/GoBackHeaderMobile'
     ),
+  { ssr: false },
+);
+
+const Sidebar = dynamic(
+  () => import(/* webpackChunkName: "sidebar" */ './sidebar/Sidebar'),
   { ssr: false },
 );
 
@@ -180,6 +184,7 @@ function MainLayoutComponent({
   ) {
     return null;
   }
+
   const isScreenCentered =
     isLaptopXL && screenCenteredOnMobileLayout ? true : screenCentered;
 
@@ -202,11 +207,14 @@ function MainLayoutComponent({
         className={classNames(
           'flex flex-col tablet:pl-16 laptop:pl-11',
           className,
-          !isScreenCentered && sidebarExpanded && 'laptop:!pl-60',
+          isAuthReady &&
+            !isScreenCentered &&
+            sidebarExpanded &&
+            'laptop:!pl-60',
           isBannerAvailable && 'laptop:pt-8',
         )}
       >
-        {showSidebar && (
+        {isAuthReady && showSidebar && (
           <Sidebar
             promotionalBannerActive={isBannerAvailable}
             sidebarRendered={sidebarRendered}

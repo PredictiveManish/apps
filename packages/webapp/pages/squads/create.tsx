@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { NextSeo, NextSeoProps } from 'next-seo';
+import { NextSeoProps } from 'next-seo';
 import { useRouter } from 'next/router';
 import {
   WriteFreeformContent,
@@ -41,23 +41,20 @@ import {
 import { useSquadCreate } from '@dailydotdev/shared/src/hooks/squads/useSquadCreate';
 import { formToJson } from '@dailydotdev/shared/src/lib/form';
 import { ActionType } from '@dailydotdev/shared/src/graphql/actions';
+import {
+  WriteFormTab,
+  WriteFormTabToFormID,
+} from '@dailydotdev/shared/src/components/fields/form/common';
 import { getLayout as getMainLayout } from '../../components/layouts/MainLayout';
 import { defaultOpenGraph, defaultSeo } from '../../next-seo';
+import { getTemplatedTitle } from '../../components/layouts/utils';
 
 const seo: NextSeoProps = {
-  title: 'Create post',
+  title: getTemplatedTitle('Create post'),
   openGraph: { ...defaultOpenGraph },
+  nofollow: true,
+  noindex: true,
   ...defaultSeo,
-};
-
-enum WriteFormTab {
-  Share = 'Share a link',
-  NewPost = 'New post',
-}
-
-const WriteFormTabToFormID = {
-  [WriteFormTab.Share]: 'write-post-link',
-  [WriteFormTab.NewPost]: 'write-post-freeform',
 };
 
 function CreatePost(): ReactElement {
@@ -103,9 +100,10 @@ function CreatePost(): ReactElement {
   } = useDiscardPost({ draftIdentifier: squad?.id });
   const {
     mutateAsync: onCreatePost,
-    isLoading: isPosting,
+    isPending: isPosting,
     isSuccess,
-  } = useMutation(createPost, {
+  } = useMutation({
+    mutationFn: createPost,
     onMutate: () => {
       onAskConfirmation(false);
     },
@@ -193,7 +191,6 @@ function CreatePost(): ReactElement {
       enableUpload
     >
       <WritePageContainer>
-        <NextSeo {...seo} titleTemplate="%s | daily.dev" noindex nofollow />
         <TabContainer<WriteFormTab>
           onActiveChange={(active) => setDisplay(active)}
           controlledActive={display}
@@ -236,5 +233,6 @@ function CreatePost(): ReactElement {
 }
 
 CreatePost.getLayout = getMainLayout;
+CreatePost.layoutProps = { seo };
 
 export default CreatePost;

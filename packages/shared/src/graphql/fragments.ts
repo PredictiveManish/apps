@@ -51,6 +51,15 @@ export const USER_AUTHOR_FRAGMENT = gql`
   ${USER_SHORT_INFO_FRAGMENT}
 `;
 
+export const USER_BASIC_INFO = gql`
+  fragment UserBasicInfo on User {
+    id
+    name
+    image
+    permalink
+  }
+`;
+
 export const SOURCE_DIRECTORY_INFO_FRAGMENT = gql`
   fragment SourceDirectoryInfo on Source {
     id
@@ -143,6 +152,51 @@ export const SQUAD_BASE_FRAGMENT = `
   }
   ${SOURCE_BASE_FRAGMENT}
   ${PRIVILEGED_MEMBERS_FRAGMENT}
+`;
+
+export const FEED_POST_INFO_FRAGMENT = gql`
+  fragment FeedPostInfo on Post {
+    id
+    title
+    image
+    readTime
+    permalink
+    commentsPermalink
+    createdAt
+    commented
+    bookmarked
+    views
+    numUpvotes
+    numComments
+    summary
+    bookmark {
+      remindAt
+    }
+    author {
+      id
+      name
+      image
+      username
+      permalink
+    }
+    type
+    tags
+    source {
+      id
+      handle
+      name
+      permalink
+      image
+      type
+    }
+    userState {
+      vote
+      flags {
+        feedbackDismiss
+      }
+    }
+    slug
+  }
 `;
 
 export const SHARED_POST_INFO_FRAGMENT = gql`
